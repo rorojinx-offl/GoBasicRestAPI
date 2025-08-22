@@ -20,7 +20,12 @@ func main() {
 
 // Function will handle the GET request to /events and takes a context parameter which handles the request and response.
 func getEvents(context *gin.Context) {
-	events := models.GetAllEvents()     //Returns a slice of all events
+	events, err := models.GetAllEvents() //Returns a slice of all events
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"Error": "Could not retrieve events"})
+		return
+	}
+
 	context.JSON(http.StatusOK, events) //Returns a JSON with OK status (code 200) and a slice of events.
 }
 
@@ -36,7 +41,10 @@ func createEvent(context *gin.Context) {
 	event.ID = 1
 	event.UserID = 1
 
-	event.Save() // Save the event using the Save method to add struct to the slice of events.
+	err = event.Save() // Save the event using the Save method to add struct to the slice of events.
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"Error": "Could not create events"})
+	}
 
 	context.JSON(http.StatusCreated, gin.H{"Success": "Event created successfully", "Event": event})
 }
