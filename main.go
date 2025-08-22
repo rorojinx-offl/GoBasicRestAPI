@@ -1,12 +1,14 @@
 package main
 
 import (
+	"GoBasicRestAPI/db"
 	"GoBasicRestAPI/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func main() {
+	db.InitDB()
 	server := gin.Default()
 
 	server.GET("/events", getEvents)    // Register the GET request to /events with the getEvents function to retrieve all events.
