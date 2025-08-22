@@ -5,18 +5,18 @@ import (
 	_ "github.com/mattn/go-sqlite3" //Import with underscore so that we don't use it directly, but we have SQL lib use its functionalities
 )
 
-var db *sql.DB
+var DB *sql.DB
 
 // Function to initialize the database connection
 func InitDB() {
 	var err error
-	db, err = sql.Open("sqlite3", "db/api.db") //Open a database connection to the SQLite database file named api.db
+	DB, err = sql.Open("sqlite3", "db/api.db") //Open a database connection to the SQLite database file named api.db
 	if err != nil {
 		panic("Could not connect to the database")
 	}
 
-	db.SetMaxOpenConns(10) //Configure connection pool to allow a maximum of 25 open connections to the database.
-	db.SetMaxIdleConns(5)  //Set the maximum number of idle connections to 5.
+	DB.SetMaxOpenConns(10) //Configure connection pool to allow a maximum of 25 open connections to the database.
+	DB.SetMaxIdleConns(5)  //Set the maximum number of idle connections to 5.
 
 	createTables()
 }
@@ -32,8 +32,8 @@ func createTables() {
 	    user_id INTEGER
 	)
 	`
-	_, err := db.Exec(createEventsTable)
+	_, err := DB.Exec(createEventsTable)
 	if err != nil {
-		panic(err)
+		panic("Could not configure table!")
 	}
 }
