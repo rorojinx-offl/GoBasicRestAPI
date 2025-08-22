@@ -2,8 +2,8 @@ POST localhost:8081/events
 content-type: application/json
 
 {
-  "name": "Test Event",
-  "description": "A test event for API testing",
-  "location": "A test area",
-  "dateTime": "2025-08-21T16:36:00Z"
+  "name": "Test Event 2",
+  "description": "A second test event for API testing",
+  "location": "Another test area",
+  "dateTime": "2025-08-22T14:58:00Z"
 }
