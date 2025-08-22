@@ -86,5 +86,23 @@ func updateEvent(context *gin.Context) {
 }
 
 func deleteEvent(context *gin.Context) {
+	idString := context.Param("id")                    //Retrieve the ID parameter from the URL.
+	eventId, err := strconv.ParseInt(idString, 10, 64) //Convert the ID string to an integer.
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"Error": "Could not parse event ID"})
+		return
+	}
 
+	event, err := models.GetEventByID(eventId)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"Error": "Could not retrieve event"})
+		return
+	}
+	err = event.DeleteEvent()
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"Error": "Could not delete event"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"Success": "Event deleted successfully"})
 }
