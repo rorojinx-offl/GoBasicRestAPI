@@ -60,3 +60,16 @@ func GetAllEvents() ([]Event, error) {
 
 	return events, nil // Returns all events stored in the slice
 }
+
+func GetEventByID(id int64) (*Event, error) {
+	query := "SELECT * FROM events WHERE id=?"
+	row := db.DB.QueryRow(query, id) // QueryRow is used when we expect only one row to be returned and the second argument is the value to replace the placeholder in the query.
+
+	event := Event{}
+	err := row.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserID)
+	if err != nil {
+		return nil, err //Nil can be returned for a struct as the return type is a pointer to the struct, not a copy of the struct. To return a copy, use Event
+	}
+
+	return &event, nil
+}
