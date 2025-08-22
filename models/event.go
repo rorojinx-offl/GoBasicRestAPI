@@ -14,8 +14,6 @@ type Event struct {
 	UserID      int
 }
 
-var events = []Event{} // Slice to hold all events
-
 func (e *Event) Save() error {
 	query := `
 	INSERT INTO events (name, description,location,dateTime,user_id) 
@@ -32,8 +30,8 @@ func (e *Event) Save() error {
 		return err
 	}
 	id, err := result.LastInsertId()
-	e.ID = id // Set the ID of the event to the last inserted ID from the database
-	return err
+	e.ID = id  // Set the ID of the event to the last inserted ID from the database
+	return err //The latest error encountered, if any, during the execution of the function
 
 	//events = append(events, *e) //Append the event to the slice
 }
@@ -72,4 +70,19 @@ func GetEventByID(id int64) (*Event, error) {
 	}
 
 	return &event, nil
+}
+
+func (e *Event) UpdateEvent() error {
+	query := `
+	UPDATE events SET name=?, description=?, location=?, dateTime=?
+	WHERE id=?
+`
+
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.ID)
+	return err
 }
