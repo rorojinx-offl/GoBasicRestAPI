@@ -37,11 +37,11 @@ func (u *User) Save() error {
 }
 
 func (u *User) ValidateCreds() error {
-	query := "SELECT password FROM users WHERE email = ?"
+	query := "SELECT id, password FROM users WHERE email = ?" //ID is selected but not used here. It can be useful for generating tokens after successful login.
 	row := db.DB.QueryRow(query, u.Email)
 
 	var retrievedPassword string
-	err := row.Scan(&retrievedPassword)
+	err := row.Scan(&u.ID, &retrievedPassword) //Direct data from the row to the User struct ID field and the retrievedPassword variable.
 	if err != nil {
 		return err
 	}
