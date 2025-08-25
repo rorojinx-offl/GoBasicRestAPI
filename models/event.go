@@ -11,7 +11,7 @@ type Event struct {
 	Description string    `binding:"required"` // Binding tag to ensure Description is required and mapped to the JSON body request
 	Location    string    `binding:"required"` // Binding tag to ensure Location is required and mapped to the JSON body request
 	DateTime    time.Time `binding:"required"` // Binding tag to ensure DateTime is required and mapped to the JSON body request
-	UserID      int
+	UserID      int64
 }
 
 func (e *Event) Save() error {
