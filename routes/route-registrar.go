@@ -13,4 +13,5 @@ func RouteRegistrar(server *gin.Engine) {
 
 	//User routes
 	server.POST("/signup", signup) // Register the POST request to /signup with the signup function to create a new user.
+	server.POST("/login", login)   // Register the POST request to /login with the login function to authenticate a user.
 }
