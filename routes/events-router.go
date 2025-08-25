@@ -2,6 +2,7 @@ package routes
 
 import (
 	"GoBasicRestAPI/models"
+	"GoBasicRestAPI/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -36,16 +37,28 @@ func getSingleEvent(context *gin.Context) {
 }
 
 func createEvent(context *gin.Context) {
+	token := context.Request.Header.Get("Authorization") //Authorization header is used to pass JWT token for authentication.
+	if token == "" {
+		context.JSON(http.StatusUnauthorized, gin.H{"Error": "No token found"})
+		return
+	}
+
+	userId, err := utils.VerifyToken(token)
+	if err != nil {
+		context.JSON(http.StatusUnauthorized, gin.H{"Error": "Invalid token"})
+		return
+	}
+
 	event := models.Event{}
 
-	err := context.ShouldBind(&event) //ShouldBind will bind the request body to the format of the Event struct.
+	err = context.ShouldBind(&event) //ShouldBind will bind the request body to the format of the Event struct.
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"Error": "Could not parse request"})
 		return
 	}
 
-	event.ID = 1
-	event.UserID = 1
+	//event.ID = 1 -> Redundant as ID is auto-incremented in the Save method.
+	event.UserID = userId //Set the UserID field of the event to the userId extracted from the token.
 
 	err = event.Save() // Save the event using the Save method to add struct to the slice of events.
 	if err != nil {
