@@ -12,11 +12,13 @@ func RouteRegistrar(server *gin.Engine) {
 	server.GET("/events/:id", getSingleEvent) //Using :id can allow for dynamic ID parameters in the URL to get individual events.
 
 	//Protected routes - only authenticated users can create events
-	protected := server.Group("/")               // Create a route group for protected routes
-	protected.Use(utils.Authenticate)            // Apply the authentication middleware to the group
-	protected.POST("/events", createEvent)       // Register the POST request to /events with the auth middleware first and then createEvent function to create a new event.
-	protected.PUT("/events/:id", updateEvent)    // Register the PUT request to /events/:id with the updateEvent function to update an existing event.
-	protected.DELETE("/events/:id", deleteEvent) // Register the DELETE request to /events/:id with the deleteEvent function to delete an event.
+	protected := server.Group("/")                           // Create a route group for protected routes
+	protected.Use(utils.Authenticate)                        // Apply the authentication middleware to the group
+	protected.POST("/events", createEvent)                   // Register the POST request to /events with the createEvent function to create a new event.
+	protected.PUT("/events/:id", updateEvent)                // Register the PUT request to /events/:id with the updateEvent function to update an existing event.
+	protected.DELETE("/events/:id", deleteEvent)             // Register the DELETE request to /events/:id with the deleteEvent function to delete an event.
+	protected.POST("/events/:id/register", registerForEvent) //Register the POST request to /events/:id/register with the registerForEvent function to register the authenticated user for the specified event.
+	protected.DELETE("/events/:id/register", cancelRegistration)
 
 	//User routes
 	server.POST("/signup", signup) // Register the POST request to /signup with the signup function to create a new user.
