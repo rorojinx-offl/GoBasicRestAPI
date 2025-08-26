@@ -2,7 +2,6 @@ package routes
 
 import (
 	"GoBasicRestAPI/models"
-	"GoBasicRestAPI/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -37,27 +36,16 @@ func getSingleEvent(context *gin.Context) {
 }
 
 func createEvent(context *gin.Context) {
-	token := context.Request.Header.Get("Authorization") //Authorization header is used to pass JWT token for authentication.
-	if token == "" {
-		context.JSON(http.StatusUnauthorized, gin.H{"Error": "No token found"})
-		return
-	}
-
-	userId, err := utils.VerifyToken(token)
-	if err != nil {
-		context.JSON(http.StatusUnauthorized, gin.H{"Error": "Invalid token"})
-		return
-	}
-
 	event := models.Event{}
 
-	err = context.ShouldBind(&event) //ShouldBind will bind the request body to the format of the Event struct.
+	err := context.ShouldBind(&event) //ShouldBind will bind the request body to the format of the Event struct.
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"Error": "Could not parse request"})
 		return
 	}
 
 	//event.ID = 1 -> Redundant as ID is auto-incremented in the Save method.
+	userId := context.GetInt64("userId")
 	event.UserID = userId //Set the UserID field of the event to the userId extracted from the token.
 
 	err = event.Save() // Save the event using the Save method to add struct to the slice of events.
@@ -76,9 +64,16 @@ func updateEvent(context *gin.Context) {
 		return
 	}
 
-	_, err = models.GetEventByID(eventId)
+	event, err := models.GetEventByID(eventId) //the event var will hold the current struct from DB and eventually the memory and will only be used to retrieve the UserID for authorisation
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"Error": "Could not retrieve event"})
+		return
+	}
+
+	//Retrieve userID from the current session token context and compare it with the userID of the event to ensure only the creator can update the event.
+	userId := context.GetInt64("userId")
+	if event.UserID != userId {
+		context.JSON(http.StatusUnauthorized, gin.H{"Error": "You do not have permission to update the event"})
 		return
 	}
 
@@ -95,7 +90,7 @@ func updateEvent(context *gin.Context) {
 		context.JSON(http.StatusInternalServerError, gin.H{"Error": "Could not update event"})
 	}
 
-	context.JSON(http.StatusOK, gin.H{"Success": "Event updated successfully", "Event": updatedEvent})
+	context.JSON(http.StatusOK, gin.H{"Success": "Event updated successfully"})
 }
 
 func deleteEvent(context *gin.Context) {
@@ -111,6 +106,14 @@ func deleteEvent(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{"Error": "Could not retrieve event"})
 		return
 	}
+
+	//Retrieve userID from the current session token context and compare it with the userID of the event to ensure only the creator can delete the event.
+	userId := context.GetInt64("userId")
+	if event.UserID != userId {
+		context.JSON(http.StatusUnauthorized, gin.H{"Error": "You do not have permission to delete the event"})
+		return
+	}
+
 	err = event.DeleteEvent()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"Error": "Could not delete event"})
