@@ -1,0 +1,2 @@
+DELETE localhost:8081/events/1/register
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzU2MjI0ODY5LCJ1c2VySWQiOjJ9.6sw4OLLfrbWu_DAYOkp4Kgc4wKEilgg-NVzE8mpRtQ4
