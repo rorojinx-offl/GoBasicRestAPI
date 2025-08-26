@@ -32,7 +32,7 @@ func createTables() {
 `
 	_, err := DB.Exec(createUserTable)
 	if err != nil {
-		panic(fmt.Sprintf("Could not configure table! %v", err))
+		panic(fmt.Sprintf("Could not configure users table! %v", err))
 	}
 
 	createEventsTable := `
@@ -48,7 +48,21 @@ func createTables() {
 	`
 	_, err = DB.Exec(createEventsTable)
 	if err != nil {
-		panic(fmt.Sprintf("Could not configure table! %v", err))
+		panic(fmt.Sprintf("Could not configure events table! %v", err))
 	}
 
+	createRegistrationsTable := `
+	CREATE TABLE IF NOT EXISTS registrations (
+	    id INTEGER PRIMARY KEY AUTOINCREMENT,
+	    event_id INTEGER,
+	    user_id INTEGER,
+	    FOREIGN KEY(event_id) REFERENCES events(id),
+	    FOREIGN KEY(user_id) REFERENCES users(id)
+	)
+	`
+
+	_, err = DB.Exec(createRegistrationsTable)
+	if err != nil {
+		panic(fmt.Sprintf("Could not configure registrations table! %v", err))
+	}
 }
