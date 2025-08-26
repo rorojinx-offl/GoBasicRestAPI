@@ -1,10 +1,10 @@
 POST localhost:8081/events
 content-type: application/json
-authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzU2MTU1NTA2LCJ1c2VySWQiOjJ9.rXd6ZEWIB7HjwPdfwKcWQtvDehj8j6tVc9KiqlZVcgE
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzU2MjIwMDU3LCJ1c2VySWQiOjJ9.G3SREDqHCdWWAG_w8kwTLOeOlV38UydUfTS8t_Xq7QU
 
 {
-  "name": "Test Event 2",
-  "description": "A second test event for API testing",
-  "location": "Test area 2",
-  "dateTime": "2025-08-25T19:59:00Z"
+  "name": "Test Event 3",
+  "description": "A third test event for API testing",
+  "location": "Test area 3",
+  "dateTime": "2025-08-26T13:55:00Z"
 }
